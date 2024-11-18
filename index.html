@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT运维管理系统 - 首页</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div id="template-container"></div>
+    
+    <script src="/js/template.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/templates/base.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('template-container').innerHTML = html;
+                    loadComponent('sidebar-placeholder', '/components/sidebar.html');
+                    loadDashboardContent();
+                });
+        });
+
+        function loadDashboardContent() {
+            const dashboardHtml = `
+                <div class="dashboard">
+                    <h1 class="page-title">工单服务控制台</h1>
+                    <div class="stats-grid">
+                        <!-- 仪表盘卡片内容 -->
+                    </div>
+                </div>
+            `;
+            document.getElementById('content-placeholder').innerHTML = dashboardHtml;
+        }
+    </script>
+</body>
+</html> 
