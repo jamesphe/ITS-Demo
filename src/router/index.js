@@ -406,6 +406,20 @@ export const routes = [
       }
     ]
   },
+  {
+    path: '/equipment',
+    component: Layout,
+    name: 'Equipment',
+    meta: { title: '设备借用', icon: 'el-icon-s-tools' },
+    children: [
+      {
+        path: 'apply',
+        name: 'EquipmentApply',
+        component: () => import('@/views/equipment/apply.vue'),
+        meta: { title: '创建申请单' }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
