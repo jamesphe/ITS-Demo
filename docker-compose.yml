@@ -1,0 +1,9 @@
+version: '3'
+services:
+  frontend:
+    build: .
+    ports:
+      - "80:80"
+    # 如果有后端服务，可以添加依赖
+    # depends_on:
+    #   - backend 
