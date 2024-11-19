@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/layout'
-import ticketsRouter from './modules/tickets'
 
 Vue.use(Router)
 
@@ -14,17 +13,25 @@ export const routes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/ticket-console',
+    hidden: true
+  },
+  {
+    path: '/ticket-console',
+    component: Layout,
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: '仪表盘', icon: 'dashboard', affix: true }
+        path: '',
+        component: () => import('@/views/ticket-console/index'),
+        name: 'TicketConsole',
+        meta: { 
+          title: '工单控制台', 
+          icon: 'ticket-console',
+          affix: true
+        }
       }
     ]
   },
-  ticketsRouter,
   {
     path: '/ops-service',
     component: Layout,
@@ -280,7 +287,7 @@ export const routes = [
         path: 'checkin',
         component: () => import('@/views/asset/checkin'),
         name: 'AssetCheckin',
-        meta: { title: '资产登记及入库', icon: 'apply' }
+        meta: { title: '资产登记及库', icon: 'apply' }
       },
       {
         path: 'assign',
