@@ -127,6 +127,12 @@ export const routes = [
     meta: { title: '知识库', icon: 'knowledge' },
     children: [
       {
+        path: 'search',
+        component: () => import('@/views/knowledge/search'),
+        name: 'KnowledgeSearch',
+        meta: { title: '知识搜索', icon: 'search' }
+      },
+      {
         path: 'collect-store',
         component: () => import('@/views/knowledge/collect-store'),
         name: 'KnowledgeCollectStore',
@@ -140,7 +146,7 @@ export const routes = [
       },
       {
         path: 'troubleshoot',
-        component: () => import('@/views/knowledge/troubleshoot'),
+        component: () => import('@/views/knowledge/troubleshooting.vue'),
         name: 'TroubleshootGuide',
         meta: { title: '故障排查指南', icon: 'troubleshoot' }
       },
@@ -151,28 +157,10 @@ export const routes = [
         meta: { title: '标准操作程序(SOP)文档', icon: 'sop' }
       },
       {
-        path: 'search',
-        component: () => import('@/views/knowledge/search'),
-        name: 'KnowledgeSearch',
-        meta: { title: '搜索功能', icon: 'search' }
-      },
-      {
-        path: 'share',
-        component: () => import('@/views/knowledge/share'),
-        name: 'KnowledgeShare',
-        meta: { title: '知识共享与更新', icon: 'share' }
-      },
-      {
-        path: 'permission',
-        component: () => import('@/views/knowledge/permission'),
-        name: 'KnowledgePermission',
-        meta: { title: '权限管理', icon: 'permission' }
-      },
-      {
         path: 'analysis',
         component: () => import('@/views/knowledge/analysis'),
         name: 'KnowledgeAnalysis',
-        meta: { title: '分析与报告', icon: 'analysis' }
+        meta: { title: '分析与报告' }
       }
     ]
   },
