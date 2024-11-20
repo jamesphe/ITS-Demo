@@ -39,6 +39,17 @@
               :value="item.value"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="服务名称" class="form-item">
+          <el-select v-model="queryParams.serviceName" 
+            placeholder="请选择服务" 
+            clearable
+            class="filter-select">
+            <el-option v-for="item in serviceTypes" 
+              :key="item.value" 
+              :label="item.label" 
+              :value="item.value"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="时间范围" class="form-item">
           <el-date-picker
             v-model="queryParams.timeRange"
@@ -96,6 +107,16 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
+        <el-table-column prop="serviceName" label="服务名称" min-width="150">
+          <template slot-scope="scope">
+            <el-tag 
+              type="info" 
+              effect="plain"
+              class="service-tag">
+              {{ scope.row.serviceName }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" min-width="180" fixed="right">
           <template slot-scope="scope">
             <el-button 
@@ -141,6 +162,7 @@ export default {
         pageSize: 10,
         status: '',
         priority: '',
+        serviceName: '',
         timeRange: []
       },
       // 工单列表数据
@@ -151,7 +173,8 @@ export default {
           status: '未分派',
           submitTime: '2024-11-18 10:30',
           priority: '高',
-          eventId: 'EVT-001'
+          eventId: 'EVT-001',
+          serviceName: '系统访问服务'
         },
         {
           ticketId: 'W002',
@@ -159,30 +182,50 @@ export default {
           status: '处理中',
           submitTime: '2024-11-17 14:30',
           priority: '中',
-          eventId: 'EVT-002'
+          eventId: 'EVT-002',
+          serviceName: '网络连接服务'
         },
         {
           ticketId: 'W003',
           title: '软件安装协助工单',
-          status: '已完成',
+          status: '已解决',
           submitTime: '2024-11-16 11:20',
           priority: '低',
-          eventId: 'EVT-003'
+          eventId: 'EVT-003',
+          serviceName: '软件安装服务'
+        },
+        {
+          ticketId: 'W004',
+          title: '账号权限申请工单',
+          status: '已关闭',
+          submitTime: '2024-11-15 09:15',
+          priority: '中',
+          eventId: 'EVT-004',
+          serviceName: '账号管理服务'
         }
       ],
       // 总记录数
-      total: 3,
+      total: 4,
       // 状态选项
       statusTypes: [
         { value: '未分派', label: '未分派' },
         { value: '处理中', label: '处理中' },
-        { value: '已完成', label: '已完成' }
+        { value: '已解决', label: '已解决' },
+        { value: '已关闭', label: '已关闭' }
       ],
       // 优先级选项
       priorityTypes: [
         { value: '高', label: '高' },
         { value: '中', label: '中' },
         { value: '低', label: '低' }
+      ],
+      // 服务类型选项
+      serviceTypes: [
+        { value: '系统访问服务', label: '系统访问服务' },
+        { value: '网络连接服务', label: '网络连接服务' },
+        { value: '软件安装服务', label: '软件安装服务' },
+        { value: '账号管理服务', label: '账号管理服务' },
+        { value: '数据备份服务', label: '数据备份服务' }
       ]
     }
   },
@@ -192,7 +235,8 @@ export default {
       const statusMap = {
         '未分派': 'warning',
         '处理中': 'primary',
-        '已完成': 'success'
+        '已解决': 'success',
+        '已关闭': 'info'
       }
       return statusMap[status] || 'info'
     },
@@ -217,6 +261,7 @@ export default {
         pageSize: 10,
         status: '',
         priority: '',
+        serviceName: '',
         timeRange: []
       }
       this.getList()
@@ -375,6 +420,12 @@ export default {
     & + .action-button {
       margin-left: 12px;
     }
+  }
+
+  .service-tag {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
   }
 }
 
