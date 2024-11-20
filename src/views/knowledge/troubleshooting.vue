@@ -235,52 +235,168 @@
     <el-dialog
       :visible.sync="categoryDialogVisible"
       :title="categoryDialogType === 'add' ? '添加故障类别' : '编辑故障类别'"
-      width="50%"
+      width="65%"
+      custom-class="category-dialog"
     >
       <el-form
         ref="categoryForm"
         :model="categoryForm"
         :rules="categoryRules"
         label-width="100px"
+        class="category-form"
       >
-        <el-form-item label="类别名称" prop="label">
-          <el-input v-model="categoryForm.label" placeholder="请输入类别名称" />
-        </el-form-item>
-        <el-form-item label="故障描述" prop="description">
-          <el-input
-            v-model="categoryForm.description"
-            type="textarea"
-            placeholder="请输入故障描述"
-          />
-        </el-form-item>
-        <el-form-item label="严重程度" prop="severity">
-          <el-select v-model="categoryForm.severity" placeholder="请选择严重程度">
-            <el-option label="高危故障" value="high" />
-            <el-option label="一般故障" value="normal" />
-            <el-option label="低危故障" value="low" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="影响范围" prop="impact">
-          <el-input
-            v-model="categoryForm.impact"
-            type="textarea"
-            placeholder="请输入影响范围"
-          />
-        </el-form-item>
-        <el-form-item label="上级类别" prop="parentId">
-          <el-cascader
-            v-model="categoryForm.parentId"
-            :options="categoryOptions"
-            :props="{ 
-              checkStrictly: true,
-              value: 'id',
-              label: 'label'
-            }"
-            clearable
-            placeholder="请选择上级类别"
-          />
-        </el-form-item>
+        <!-- 基本信息部分 -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="el-icon-info"></i>
+            <span>基本信息</span>
+          </div>
+          <div class="section-content">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="类别名称" prop="label">
+                  <el-input v-model="categoryForm.label" placeholder="请输入类别名称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="严重程度" prop="severity">
+                  <el-select v-model="categoryForm.severity" placeholder="请选择严重程度" class="full-width">
+                    <el-option label="高危故障" value="high" />
+                    <el-option label="一般故障" value="normal" />
+                    <el-option label="低危故障" value="low" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            
+            <el-form-item label="故障描述" prop="description">
+              <el-input
+                v-model="categoryForm.description"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入故障描述"
+              />
+            </el-form-item>
+            
+            <el-form-item label="影响范围" prop="impact">
+              <el-input
+                v-model="categoryForm.impact"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入影响范围"
+              />
+            </el-form-item>
+            
+            <el-form-item label="上级类别" prop="parentId">
+              <el-cascader
+                v-model="categoryForm.parentId"
+                :options="categoryOptions"
+                :props="{ 
+                  checkStrictly: true,
+                  value: 'id',
+                  label: 'label'
+                }"
+                clearable
+                placeholder="请选择上级类别"
+                class="full-width"
+              />
+            </el-form-item>
+          </div>
+        </div>
+
+        <!-- 排查步骤部分 -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="el-icon-s-operation"></i>
+            <span>排查步骤</span>
+            <el-button 
+              type="text"
+              icon="el-icon-plus"
+              @click="addStep"
+              class="add-step-btn"
+            >
+              添加步骤
+            </el-button>
+          </div>
+          
+          <div class="section-content">
+            <div 
+              v-for="(step, index) in categoryForm.steps" 
+              :key="index"
+              class="step-item"
+            >
+              <div class="step-header">
+                <span class="step-index">步骤 {{index + 1}}</span>
+                <el-button 
+                  type="text" 
+                  icon="el-icon-delete"
+                  @click="removeStep(index)"
+                  v-if="categoryForm.steps.length > 1"
+                  class="delete-step-btn"
+                >
+                  删除
+                </el-button>
+              </div>
+              
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <el-form-item 
+                    :prop="'steps.' + index + '.title'"
+                    :rules="categoryRules['steps.0.title']"
+                    label="步骤标题"
+                  >
+                    <el-input v-model="step.title" placeholder="请输入步骤标题" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <el-form-item 
+                    :prop="'steps.' + index + '.description'"
+                    :rules="categoryRules['steps.0.description']"
+                    label="步骤描述"
+                  >
+                    <el-input
+                      v-model="step.description"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入步骤描述"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <el-form-item label="解决方案">
+                    <el-input
+                      v-model="step.solution"
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入解决方案"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <el-form-item label="操作提示">
+                    <el-input
+                      v-model="step.tips"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入操作提示"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </div>
       </el-form>
+      
       <template #footer>
         <el-button @click="categoryDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitCategory">确 定</el-button>
@@ -475,7 +591,13 @@ export default {
         description: '',
         severity: '',
         impact: '',
-        parentId: null
+        parentId: null,
+        steps: [{
+          title: '',
+          description: '',
+          solution: '',
+          tips: ''
+        }]
       },
       categoryRules: {
         label: [
@@ -486,6 +608,12 @@ export default {
         ],
         severity: [
           { required: true, message: '请选择严重程度', trigger: 'change' }
+        ],
+        'steps.0.title': [
+          { required: true, message: '请输入步骤标题', trigger: 'blur' }
+        ],
+        'steps.0.description': [
+          { required: true, message: '请输入步骤描述', trigger: 'blur' }
         ]
       }
     }
@@ -627,7 +755,13 @@ export default {
         description: '',
         severity: '',
         impact: '',
-        parentId: null
+        parentId: null,
+        steps: [{
+          title: '',
+          description: '',
+          solution: '',
+          tips: ''
+        }]
       }
       this.categoryDialogVisible = true
     },
@@ -639,7 +773,13 @@ export default {
         description: data.description || '',
         severity: data.severity || '',
         impact: data.impact || '',
-        parentId: this.getParentId(data)
+        parentId: this.getParentId(data),
+        steps: data.steps.map(step => ({
+          title: step.title,
+          description: step.description,
+          solution: step.solution,
+          tips: step.tips
+        }))
       }
       this.categoryDialogVisible = true
     },
@@ -679,7 +819,8 @@ export default {
               description: this.categoryForm.description,
               severity: this.categoryForm.severity,
               impact: this.categoryForm.impact,
-              children: []
+              children: [],
+              steps: this.categoryForm.steps
             }
             
             if (this.categoryForm.parentId) {
@@ -724,7 +865,8 @@ export default {
             label: formData.label,
             description: formData.description,
             severity: formData.severity,
-            impact: formData.impact
+            impact: formData.impact,
+            steps: formData.steps
           })
           return true
         }
@@ -1091,5 +1233,121 @@ export default {
 
 ::-webkit-scrollbar-track {
   background: #f5f7fa;
+}
+
+.category-dialog {
+  .category-form {
+    padding: 0 20px;
+    
+    .form-section {
+      margin-bottom: 30px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      
+      .section-title {
+        padding: 15px 20px;
+        border-bottom: 1px solid #ebeef5;
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        border-radius: 8px 8px 0 0;
+        
+        i {
+          margin-right: 8px;
+          color: #409eff;
+          font-size: 18px;
+        }
+        
+        span {
+          font-size: 16px;
+          font-weight: 500;
+          color: #303133;
+        }
+        
+        .add-step-btn {
+          margin-left: auto;
+          padding: 0 16px;
+          
+          i {
+            margin-right: 4px;
+            color: #67c23a;
+          }
+          
+          &:hover {
+            color: #67c23a;
+          }
+        }
+      }
+      
+      .section-content {
+        padding: 20px;
+        
+        .step-item {
+          margin-bottom: 25px;
+          padding: 20px;
+          background: #f8fafc;
+          border-radius: 6px;
+          border: 1px solid #ebeef5;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            
+            .step-index {
+              font-size: 15px;
+              font-weight: 500;
+              color: #409eff;
+            }
+            
+            .delete-step-btn {
+              color: #f56c6c;
+              
+              &:hover {
+                opacity: 0.8;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .el-form-item {
+      margin-bottom: 18px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+// 优化滚动条样式
+:deep(.el-dialog__body) {
+  max-height: calc(90vh - 150px);
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c0c4cc;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f5f7fa;
+  }
 }
 </style> 

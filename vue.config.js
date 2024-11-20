@@ -25,5 +25,13 @@ module.exports = defineConfig({
         symbolId: 'icon-[name]'
       })
       .end()
+  },
+  devServer: {
+    host: '0.0.0.0',
+    port: 8080,
+    allowedHosts: [
+      '.microdev.cn',    // 允许所有子域名
+      'localhost',
+    ]
   }
 }) 
